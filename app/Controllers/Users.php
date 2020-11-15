@@ -126,11 +126,49 @@ class Users extends Database
   }
 
   /**
-   *  Show All Users
+   *  Show All Users Except the id that is given
    */
   public function showAllUsersExcept($id){
     $data = $this->getAllExcept($this->tableName(),$id);
     return $data;
+  }
+
+  /**
+   *  Show All Soft Deleted Users
+   */
+  public function showAllDeletedUsersExcept($id){
+    $data = $this->getAllDeletedExcept($this->tableName(),$id);
+    return $data;
+  }
+
+
+  /**
+   *  Soft Delete a User DATA
+   */
+  public function softDeleteUser($id){
+    $this->softDelete($this->tableName(),$id);
+    return true;
+  }
+
+  /**
+   *  Restore a User DATA
+   */
+  public function restoreUser($id){
+    $this->restore($this->tableName(),$id);
+    return true;
+  }
+
+  /**
+   *  Delete a User DATA Permanently
+   */
+  public function deleteUser($id){
+    $data = $this->getData($this->tableName(), $id);
+    $location = '../assets/uploaded_images/users/';
+    if($data['photo']!='default_photo.jpg'){
+      unlink($location.$data['photo']);
+    }
+    $this->delete($this->tableName(),$id);
+    return true;
   }
 
   /**

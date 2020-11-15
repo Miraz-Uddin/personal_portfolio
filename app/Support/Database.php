@@ -124,7 +124,7 @@ abstract class Database
    */
   public function passwordCheck($table, $id, $givenPass){
     //  Connect Database & get the Hash Password from Database
-    $stmt = $this -> connectDatabase() -> prepare("SELECT password FROM $table WHERE id='$id'");
+    $stmt = $this -> connectDatabase() -> prepare("SELECT password FROM $table WHERE id=$id");
     $stmt -> execute();
     $arr = $stmt->fetch(PDO::FETCH_ASSOC);
     $db_pass = $arr['password'];
@@ -143,7 +143,7 @@ abstract class Database
    */
   public function getData($table, $id){
     //  Connect Database & Run SELECT QUERY
-    $stmt = $this -> connectDatabase() -> prepare("SELECT * FROM $table WHERE id='$id'");
+    $stmt = $this -> connectDatabase() -> prepare("SELECT * FROM $table WHERE id=$id");
     $stmt -> execute();
     $arr = $stmt->fetch(PDO::FETCH_ASSOC);
     return $arr;
@@ -165,7 +165,18 @@ abstract class Database
    */
   public function getAllExcept($table,$id){
     //  Connect Database & Run SELECT QUERY
-    $stmt = $this -> connectDatabase() -> prepare("SELECT * FROM $table WHERE id NOT IN ('$id')");
+    $stmt = $this -> connectDatabase() -> prepare("SELECT * FROM $table WHERE deleted_status='No' AND id<>$id");
+    $stmt -> execute();
+    $arr = $stmt->fetchAll();
+    return $arr;
+  }
+
+  /**
+   *  get All Data from a table except those data that are soft-deleted
+   */
+  public function getAllDeletedExcept($table,$id){
+    //  Connect Database & Run SELECT QUERY
+    $stmt = $this -> connectDatabase() -> prepare("SELECT * FROM $table WHERE deleted_status='Yes' AND id<>$id");
     $stmt -> execute();
     $arr = $stmt->fetchAll();
     return $arr;
@@ -181,7 +192,7 @@ abstract class Database
       $data[$key]=$val;
     }
 
-    $data['password'] = password_hash('common123!@#',PASSWORD_DEFAULT);
+    $data['password'] = password_hash('mr.RAZ@786',PASSWORD_DEFAULT);
 
     //  Get Current time
     date_default_timezone_set('Asia/Dhaka');
@@ -253,6 +264,38 @@ abstract class Database
     $sql_query = "UPDATE $table SET ".$query_string." WHERE id=:id";
     $stmt = $this -> connectDatabase() -> prepare($sql_query)-> execute($data);
   }
+
+  /**
+   * Soft Delete Data
+   */
+  public function softDelete($table,$user_id){
+    $data = [
+        'deleted_status' => 'Yes',
+        'id' => $user_id
+    ];
+    //  Connect Database & Run UPDATE QUERY
+    $stmt = $this -> connectDatabase() -> prepare("UPDATE users SET deleted_status=:deleted_status WHERE id=:id")-> execute($data);
+  }
+
+  /**
+   *  Restore Data
+   */
+  public function restore($table,$user_id){
+    $data = [
+        'deleted_status' => 'No',
+        'id' => $user_id
+    ];
+    //  Connect Database & Run UPDATE QUERY
+    $stmt = $this -> connectDatabase() -> prepare("UPDATE users SET deleted_status=:deleted_status WHERE id=:id")-> execute($data);
+  }
+
+  /**
+   *  Delete Data
+   */
+  public function delete($table,$user_id){
+    $stmt = $this -> connectDatabase() -> prepare("DELETE FROM $table WHERE id=$user_id")-> execute();
+  }
+
 }
 
 ?>

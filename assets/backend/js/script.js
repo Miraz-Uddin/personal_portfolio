@@ -35,7 +35,6 @@
 
 
           // Set All Datas in User Data Show Modal
-          // src="../assets/uploaded_images/users/default_photo.jpg"
           let photo_location = '../assets/uploaded_images/users/';
           $('#user_data_show_modal_img').attr('src',photo_location+user_data.photo);
           $('#user_data_show_modal_username').html(user_data.username);
@@ -70,6 +69,58 @@
       $('#user_data_change_modal').modal('show');
     });
 
+    //  After Click on Delete button in User table
+    $(document).on('click','#user_data_soft_delete',function(e){
+      e.preventDefault();
+      let user_id = $(this).attr('user_id');
+      $.ajax({
+        url:"user_soft_delete.php",
+        method:"POST",
+        data: {id:user_id},
+        success:function(data){
+          $('#user_moved_to_trash_message').html(data);
+          view_all_Users();
+        }
+      });
+    });
+
+    //  After Click on restore button in User table in Deleted Users's List
+    $(document).on('click','#user_data_restore',function(e){
+      e.preventDefault();
+      $('#user_delete_message').text('');
+      $('#user_restore_message').text('');
+      let user_id = $(this).attr('user_id');
+      $.ajax({
+        url:"user_restore.php",
+        method:"POST",
+        data: {id:user_id},
+        success:function(data){
+          $('#user_restore_message').html(data);
+          view_all_Users();
+        }
+      });
+    });
+
+    //  After Click on Delete button in User table in Deleted Users's List
+    $(document).on('click','#user_data_delete',function(e){
+      e.preventDefault();
+      $('#user_delete_message').text('');
+      $('#user_restore_message').text('');
+      let user_id = $(this).attr('user_id');
+      let conf = confirm('This user will be Deleted Paermanently. Are you Sure ?');
+      if(conf){
+        $.ajax({
+          url:"user_delete.php",
+          method:"POST",
+          data: {id:user_id},
+          success:function(data){
+            $('#user_delete_message').html(data);
+            view_all_Users();
+          }
+        });
+      }
+    });
+
     //  After Clicking on User Edit Modal's Update Button
     $(document).on('submit','#user_data_change_modal_form',function(e){
       e.preventDefault();
@@ -101,6 +152,13 @@
         method: 'POST',
         success:function(data){
           $('#all_students_information').html(data);
+        }
+      });
+      $.ajax({
+        url: 'users_trash_show.php',
+        method: 'POST',
+        success:function(data){
+          $('#all_deleted_students_information').html(data);
         }
       });
     }

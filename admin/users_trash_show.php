@@ -6,7 +6,7 @@
   $auth = new Auth;
   use App\Controllers\Users;
   $user = new Users;
-  $users = $user->showAllUsersExcept($_SESSION['logged_user_id']);
+  $users = $user->showAllDeletedUsersExcept($_SESSION['logged_user_id']);
   $serial=0;
   foreach($users as $single_user):
  ?>
@@ -33,9 +33,8 @@
   </td>
   <td class="text-center">
     <div class="btn-group" role="group">
-      <a href="javascript: void(0);" id="user_data_view" user_id="<?=$single_user['id']?>" class="btn btn-success btn-sm">View</a>
-      <a href="javascript: void(0);" id="user_data_change" user_id="<?=$single_user['id']?>" class="btn btn-primary btn-sm">Edit</a>
-      <a href="javascript: void(0);" id="user_data_soft_delete" user_id="<?=$single_user['id']?>" class="btn btn-danger btn-sm">Delete</a>
+      <a href="javascript: void(0);" id="user_data_restore" user_id="<?=$single_user['id']?>" class="btn btn-success btn-sm">Restore</a>
+      <a href="javascript: void(0);" id="user_data_delete" user_id="<?=$single_user['id']?>" class="btn btn-danger btn-sm">Delete</a>
     </div>
   </td>
 </tr>

@@ -40,7 +40,7 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         <li><a href="user_add.php">ADD New</a></li>
                         <li><a href="user_all.php">View All Users</a></li>
-                        <li><a href="user_trash.php">Recycle Bin</a></li>
+                        <li><a href="user_trash.php">Deleted Users</a></li>
                     </ul>
                 </li>
 

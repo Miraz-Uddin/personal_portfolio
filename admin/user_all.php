@@ -27,6 +27,7 @@
           </div>
         <?php } ?>
           <div class="card-body">
+            <div id="user_moved_to_trash_message"></div>
             <?php if($_SESSION['logged_user_role'] != 'Admin'){ ?>
               <h2 class="text-danger">ACCESS DENIED</h2>
               <p>Did You Know ? There are 8 billion people in the world but only few of them have privilege to access this page.</p>
