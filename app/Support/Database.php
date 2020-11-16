@@ -192,14 +192,6 @@ abstract class Database
       $data[$key]=$val;
     }
 
-    $data['password'] = password_hash('mr.RAZ@786',PASSWORD_DEFAULT);
-
-    //  Get Current time
-    date_default_timezone_set('Asia/Dhaka');
-    $created_at = date('Y-m-d h:i:s');
-    $data['created_at']=$created_at;
-    $data['updated_at']="0000-00-00 00:00:00";
-
     //  Making Query String
     $columNames = array_keys($arr);
     $query_string1 = '';
@@ -222,9 +214,9 @@ abstract class Database
     }
     $query_string2=trim($query_string2);
 
-    $query_string = "(".$query_string1.",password,created_at,updated_at)VALUES(".$query_string2.",:password,:created_at,:updated_at)";
+    $query_string = "(".$query_string1.")VALUES(".$query_string2.")";
 
-    //  Connect Database & Run UPDATE QUERY
+    //  Connect Database & Run INSERT QUERY
     $sql_query = "INSERT INTO $table $query_string";
     $stmt = $this -> connectDatabase() -> prepare($sql_query)-> execute($data);
 
@@ -240,11 +232,6 @@ abstract class Database
       $data[$key]=$val;
     }
 
-    //  Get Current time
-    date_default_timezone_set('Asia/Dhaka');
-    $updated_at = date('Y-m-d h:i:s');
-    $data['updated_at']=$updated_at;
-
     //  Set ID for Update
     $data['id']=$id;
 
@@ -258,7 +245,7 @@ abstract class Database
         $query_string.= " ".$columNames[$i].'='.":".$columNames[$i]." ";
       }
     }
-    $query_string=trim($query_string).", updated_at=:updated_at";
+    $query_string=trim($query_string);
 
     //  Connect Database & Run UPDATE QUERY
     $sql_query = "UPDATE $table SET ".$query_string." WHERE id=:id";
@@ -293,6 +280,7 @@ abstract class Database
    *  Delete Data
    */
   public function delete($table,$user_id){
+    //  Connect Database & Run DELETE QUERY
     $stmt = $this -> connectDatabase() -> prepare("DELETE FROM $table WHERE id=$user_id")-> execute();
   }
 
